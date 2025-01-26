@@ -1,20 +1,29 @@
 package dev.luisespinoza.pma.project;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/projects")
 public class ProjectController {
 
     @Autowired
-    ProjectService projectService;
+    ProjectService service;
+
+    @PostMapping
+    public ResponseEntity<Long> create(
+            @Validated @RequestBody ProjectRequest request
+    ) throws Exception {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));
+    }
 
     @GetMapping("{id}")
-    public Project getById(@PathVariable Long id) throws Exception {
-        return projectService.findById(id);
+    public ResponseEntity<ProjectResponse> findById(@PathVariable Long id) throws Exception {
+        return ResponseEntity.ok(service.findById(id));
     }
+
+
 }

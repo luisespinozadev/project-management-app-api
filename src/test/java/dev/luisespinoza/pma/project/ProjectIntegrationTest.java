@@ -30,21 +30,22 @@ public class ProjectIntegrationTest {
 
 
     @Test
-    public void testGetProjectById () throws Exception {
-        // Arrange
+    public void givenExistingProjectId_whenGetProjectById_thenProjectIsReturned () throws Exception {
+        // Given
         Project project = new Project();
         project.setName("New project");
         project.setDescription("Building software");
         project.setCreatedDate(LocalDateTime.now());
 
-        Project savedProject = projectRepository.save(project);
-        Long projectId = savedProject.getId();
+        Project expectedProject = projectRepository.save(project);
+        Long projectId = expectedProject.getId();
 
-        // Act
-        ResponseEntity<Project> foundProject = testRestTemplate.getForEntity("/api/projects/" + projectId, Project.class);
+        // When
+        ResponseEntity<Project> actualResponse = testRestTemplate.getForEntity("/api/projects/" + projectId, Project.class);
 
-        // Assert
-        assertEquals(HttpStatus.OK, foundProject.getStatusCode());
+        // Then
+        assertEquals(HttpStatus.OK, actualResponse.getStatusCode());
+        assertEquals(expectedProject.getName(), actualResponse.getBody().getName());
     }
 
 
